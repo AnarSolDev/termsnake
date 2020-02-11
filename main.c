@@ -6,7 +6,7 @@
 
 #define MIN_CHAR_HEIGHT GRID_LINES + 2
 #define MIN_CHAR_WIDTH  GRID_COLS * 2
-#define GAME_TITLE "Simple Snake"
+#define GAME_TITLE "TermSnake"
 #define GAME_OVER "Game Over"
 #define FRAME_PER_SECOND 30
 #define MICRO_PER_FRAME 1e3 / FRAME_PER_SECOND
