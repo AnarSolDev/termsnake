@@ -15,7 +15,7 @@ Conception and implementation choices have been made to make TermSnake a fun C p
 * ```UP```	: orient the snake top
 * ```DOWN```	: orient the snake down
 * ```Q``` or ```q```: quit the game
-* 
+
 ## Features
 
 * The game area has a fixed size, defined in advance
