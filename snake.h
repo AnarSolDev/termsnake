@@ -1,16 +1,25 @@
 #ifndef H_SNAKE
 #define H_SNAKE
+/* snake.h */
+
+/* constants =============================================================== */
 
 #define GRID_LINES 22
 #define GRID_COLS 40
 #define OBSTACLES_COUNT (GRID_LINES + GRID_COLS) * 2
 
+/* types =================================================================== */
+
 typedef struct cell Cell;
+
+/* structures ============================================================== */
 
 struct cell {
     int y;
     int x;
-}; 
+};
+
+/* entry points ============================================================ */
 
 void init_game(void);
 Cell *get_obstacles(void);
@@ -26,4 +35,3 @@ void turn_up(void);
 void turn_down(void);
 
 #endif
-

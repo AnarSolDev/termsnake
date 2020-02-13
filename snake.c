@@ -1,13 +1,23 @@
+/* snake.c */
 #include <stdlib.h>
 #include <time.h>
 #include "snake.h"
 
+/* constants ================================================================ */
+
 #define SNAKE_INIT_LEN  4
+
 #define SNAKE_MAX_LEN   GRID_LINES * GRID_COLS
-/* the speed represents the time interval to update the game */
+
+/*
+ * The speed represents the time interval to update the game, in milliseconds
+ */
 #define INIT_SPEED      500
+
 #define SPEED_CHANGE    10
+
 #define MAX_SPEED       100
+
 #define SCORE_CHANGE    100
 
 enum direction {
@@ -17,15 +27,27 @@ enum direction {
     DOWN,
 };
 
+/* private variables ======================================================== */
+
 static Cell snake[SNAKE_MAX_LEN];
+
 static Cell obstacles[OBSTACLES_COUNT];
+
 static int snake_length;
+
 static enum direction direction;
+
 static int speed;
+
 static Cell food;
+
 static int score;
+
 static int updated;
+
 static int over;
+
+/* private functions ======================================================== */
 
 static void init_obstacles(void)
 {
@@ -34,23 +56,23 @@ static void init_obstacles(void)
     i = 0;
     /* initialize the left side obstacles */
     for (y = 0; y < GRID_LINES; y++) {
-        obstacles[i].y = y;
-        obstacles[i++].x = 0;
+	obstacles[i].y = y;
+	obstacles[i++].x = 0;
     }
     /* initialize the right side obstacles */
     for (y = 0; y < GRID_LINES; y++) {
-        obstacles[i].y = y;
-        obstacles[i++].x = GRID_COLS - 1;
+	obstacles[i].y = y;
+	obstacles[i++].x = GRID_COLS - 1;
     }
     /* initialize the top side obstacles */
     for (x = 0; x < GRID_COLS; x++) {
-        obstacles[i].y = 0;
-        obstacles[i++].x = x;
+	obstacles[i].y = 0;
+	obstacles[i++].x = x;
     }
     /* initialize the bottom side obstacles */
     for (x = 0; x < GRID_COLS; x++) {
-        obstacles[i].y = GRID_LINES - 1;
-        obstacles[i++].x = x;
+	obstacles[i].y = GRID_LINES - 1;
+	obstacles[i++].x = x;
     }
 }
 
@@ -74,15 +96,15 @@ static int is_colliding(Cell cell, int head)
 {
     int i;
 
-    for (i = head? 0: 1; i < snake_length; i++) {
-        if (are_equal_cells(cell, snake[i])) {
-            return 1;
-        }
+    for (i = head ? 0 : 1; i < snake_length; i++) {
+	if (are_equal_cells(cell, snake[i])) {
+	    return 1;
+	}
     }
     for (i = 0; i < OBSTACLES_COUNT; i++) {
-        if (are_equal_cells(cell, obstacles[i])) {
-            return 1;
-        }
+	if (are_equal_cells(cell, obstacles[i])) {
+	    return 1;
+	}
     }
     return 0;
 }
@@ -91,15 +113,17 @@ static void generate_food(void)
 {
     static int initialized = 0;
     if (!initialized) {
-        srand(time(NULL));
-        initialized = 1;
+	srand(time(NULL));
+	initialized = 1;
     }
     do {
-        food.y = rand() % GRID_LINES;
-        food.x = rand() % GRID_COLS;
-    /* while the food is generated within the obstacles or the snake */
+	food.y = rand() % GRID_LINES;
+	food.x = rand() % GRID_COLS;
+	/* while the food is generated within the obstacles or the snake */
     } while (is_colliding(food, 1));
 }
+
+/* entry points ============================================================= */
 
 /*
  * function: init_game
@@ -113,15 +137,15 @@ void init_game(void)
      * length and its direction
      */
     const Cell init_snake_body[SNAKE_INIT_LEN] = {
-        {GRID_LINES / 2, GRID_COLS / 2},
-        {GRID_LINES / 2, (GRID_COLS / 2) - 1},
-        {GRID_LINES / 2, (GRID_COLS / 2) - 2},
-        {GRID_LINES / 2, (GRID_COLS / 2) - 3},
+	{GRID_LINES / 2, GRID_COLS / 2},
+	{GRID_LINES / 2, (GRID_COLS / 2) - 1},
+	{GRID_LINES / 2, (GRID_COLS / 2) - 2},
+	{GRID_LINES / 2, (GRID_COLS / 2) - 3},
     };
     int i;
 
     for (i = 0; i < SNAKE_INIT_LEN; i++) {
-        snake[i] = init_snake_body[i];
+	snake[i] = init_snake_body[i];
     }
     snake_length = SNAKE_INIT_LEN;
     direction = RIGHT;
@@ -184,44 +208,44 @@ int update_game(void)
     int i;
 
     if (!over) {
-        /* save the current snake tail */
-        tail = snake[snake_length - 1];
-        /* move the snake body one step forward */
-        for (i = snake_length - 1; i > 0; i--) {
-            snake[i] = snake[i - 1];
-        }
-        /* move the snake head according to the current direction */
-        switch (direction) {
-            case LEFT:
-                snake[0].x--;
-                break;
-            case RIGHT:
-                snake[0].x++;
-                break;
-            case UP:
-                snake[0].y--;
-                break;
-            case DOWN:
-                snake[0].y++;
-                break;
-        }
-        if (are_equal_cells(snake[0], food)) {
-            /*
-             * increase the snake length by appending to it, the previously
-             * saved tail
-             */
-            snake[snake_length] = tail;
-            snake_length++;
-            if (speed - SPEED_CHANGE >= MAX_SPEED) {
-                speed -= SPEED_CHANGE;
-            }
-            generate_food();
-            score += SCORE_CHANGE;
-        }
-        if (is_colliding(snake[0], 0)) {
-            over = 1;
-        }
-        updated = 1;
+	/* save the current snake tail */
+	tail = snake[snake_length - 1];
+	/* move the snake body one step forward */
+	for (i = snake_length - 1; i > 0; i--) {
+	    snake[i] = snake[i - 1];
+	}
+	/* move the snake head according to the current direction */
+	switch (direction) {
+	case LEFT:
+	    snake[0].x--;
+	    break;
+	case RIGHT:
+	    snake[0].x++;
+	    break;
+	case UP:
+	    snake[0].y--;
+	    break;
+	case DOWN:
+	    snake[0].y++;
+	    break;
+	}
+	if (are_equal_cells(snake[0], food)) {
+	    /*
+	     * increase the snake length by appending to it, the previously
+	     * saved tail
+	     */
+	    snake[snake_length] = tail;
+	    snake_length++;
+	    if (speed - SPEED_CHANGE >= MAX_SPEED) {
+		speed -= SPEED_CHANGE;
+	    }
+	    generate_food();
+	    score += SCORE_CHANGE;
+	}
+	if (is_colliding(snake[0], 0)) {
+	    over = 1;
+	}
+	updated = 1;
     }
     return over;
 }
@@ -236,32 +260,31 @@ int update_game(void)
 void turn_right(void)
 {
     if (updated && (direction == UP || direction == DOWN)) {
-        direction = RIGHT;
-        updated = 0;
+	direction = RIGHT;
+	updated = 0;
     }
 }
 
 void turn_left(void)
 {
     if (updated && (direction == UP || direction == DOWN)) {
-        direction = LEFT;
-        updated = 0;
+	direction = LEFT;
+	updated = 0;
     }
 }
 
 void turn_up(void)
 {
     if (updated && (direction == RIGHT || direction == LEFT)) {
-        direction = UP;
-        updated = 0;
+	direction = UP;
+	updated = 0;
     }
 }
 
 void turn_down(void)
 {
     if (updated && (direction == RIGHT || direction == LEFT)) {
-        direction = DOWN;
-        updated = 0;
+	direction = DOWN;
+	updated = 0;
     }
 }
-
